@@ -601,7 +601,7 @@ class Number(Expression):
     def __init__(self, n: NumberType, **kwargs):
         super(Number, self).__init__("Number", **kwargs)
         self.n: NumberType = n
-
+        self.raw: Optional[str] = raw
 
 class Varargs(Expression):
     """Define the Lua Varargs expression (...)."""

@@ -651,16 +651,22 @@ class BuilderVisitor(LuaParserVisitor):
         return self.visitChildren(ctx)
 
     # Visit a parse tree produced by LuaParser#number.
+    # luaparser/builder.py
     def visitNumber(self, ctx: LuaParser.NumberContext):
-        number_text = self.visitChildren(ctx)
+        number_text = self.visitChildren(ctx).strip()
+        is_hex = number_text.startswith(('0x', '0X'))
+        num = None
         try:
-            number = ast.literal_eval(number_text)
+            if is_hex:
+                num = int(number_text, 16)
+                if num > 0x7FFFFFFF or num < -0x80000000:
+                    return self.add_context(ctx, Number(num, raw=number_text))
+            else:
+                num = ast.literal_eval(number_text)
         except:
-            # exception occurs with leading zero number: 002
-            number = float(number_text)
-        return Number(
-            number,
-        )
+            num = float(number_text)
+        raw = number_text if is_hex else None
+        return self.add_context(ctx, Number(num, raw=raw))
 
     # Visit a parse tree produced by LuaParser#string.
     def visitString(self, ctx: LuaParser.StringContext):
