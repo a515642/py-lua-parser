@@ -598,7 +598,7 @@ class Number(Expression):
         n: Numeric value.
     """
 
-    def __init__(self, n: NumberType, **kwargs):
+    def __init__(self, n: NumberType,raw: Optional[str] = None, **kwargs):
         super(Number, self).__init__("Number", **kwargs)
         self.n: NumberType = n
         self.raw: Optional[str] = raw
