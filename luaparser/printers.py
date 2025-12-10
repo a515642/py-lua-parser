@@ -392,6 +392,8 @@ class LuaOutputVisitor:
 
     @visit.register
     def visit(self, node: Number) -> str:
+        if node.raw is not None:
+            return node.raw
         return self.do_visit(node.n)
 
     @visit.register
